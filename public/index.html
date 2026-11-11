@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101114">
+<title>КЛОДОКС</title>
+<style>
+  :root {
+    --bg: #0d0e11;
+    --panel: #16171b;
+    --panel2: #1c1d22;
+    --line: #262830;
+    --text: #e9ebee;
+    --muted: #8d919b;
+    --green: #35e07a;
+    --green-dim: #1d7a45;
+    --err: #ff6b81;
+    --panel-glass: rgba(22,23,27,.62);
+    --panel-rgb: 22,23,27;
+    --glass-a: .62;
+    --body-bg: rgba(13,14,17,.72);
+    --hover: #212329;
+    --field-bg: #1c1d23;
+    --field-line: #2e313a;
+    --modal-bg: #14151a;
+  }
+  html[data-theme="midnight"] {
+    --bg: #070b14; --panel: #0e1726; --panel2: #131f33; --line: #1d2b45;
+    --text: #dde7f7; --muted: #8394ad;
+    --panel-glass: rgba(12,20,34,.72); --body-bg: rgba(4,8,16,.82);
+    --hover: #16223a; --field-bg: #101a2b; --field-line: #22314d; --modal-bg: #0d1626;
+    --panel-rgb: 12,20,34;
+  }
+  html[data-theme="light"] {
+    --bg: #f2f4f8; --panel: #ffffff; --panel2: #f7f8fb; --line: #dfe3ec;
+    --text: #151821; --muted: #5d6472;
+    --panel-glass: rgba(255,255,255,.82); --body-bg: rgba(226,231,240,.9);
+    --hover: #eaeef6; --field-bg: #f6f7fb; --field-line: #d7dce7; --modal-bg: #ffffff;
+    --panel-rgb: 255,255,255;
+  }
+  html[data-theme="graphite"] {
+    --bg: #14161a; --panel: #1e2126; --panel2: #262a31; --line: #343941;
+    --text: #e3e7ee; --muted: #98a0ad;
+    --panel-glass: rgba(30,33,38,.68); --body-bg: rgba(16,18,21,.85);
+    --hover: #2c3138; --field-bg: #24282f; --field-line: #3a404a; --modal-bg: #1b1e23;
+    --panel-rgb: 30,33,38;
+  }
+  html[data-theme="ocean"] {
+    --bg: #04101c; --panel: #0b2237; --panel2: #102f4a; --line: #17405f;
+    --text: #dff0ff; --muted: #7fa6c4;
+    --panel-glass: rgba(9,32,52,.68); --body-bg: rgba(2,10,20,.88);
+    --hover: #123a58; --field-bg: #0e2a42; --field-line: #1b4a6c; --modal-bg: #08202f;
+    --panel-rgb: 9,32,52;
+  }
+  html[data-theme="forest"] {
+    --bg: #05110c; --panel: #0e2419; --panel2: #143024; --line: #1c4432;
+    --text: #e2f5e9; --muted: #82a795;
+    --panel-glass: rgba(12,34,24,.68); --body-bg: rgba(3,12,8,.88);
+    --hover: #16382a; --field-bg: #112a1e; --field-line: #1e4a35; --modal-bg: #0b1f16;
+    --panel-rgb: 12,34,24;
+  }
+  html[data-theme="neon"] {
+    --bg: #0a0412; --panel: #1a0b2a; --panel2: #24103a; --line: #3a1a5c;
+    --text: #f0e6ff; --muted: #a58fc4;
+    --panel-glass: rgba(26,11,42,.7); --body-bg: rgba(8,3,16,.9);
+    --hover: #2c1246; --field-bg: #200d33; --field-line: #3d1b60; --modal-bg: #180a27;
+    --panel-rgb: 26,11,42;
+  }
+  html[data-theme="glass"] {
+    --bg: #0b1220; --panel: #16233a; --panel2: #1b2a45; --line: rgba(255,255,255,.14);
+    --text: #eef4ff; --muted: #9db0cc;
+    --panel-glass: rgba(255,255,255,.14); --body-bg: rgba(6,12,24,.55);
+    --hover: rgba(255,255,255,.18); --field-bg: rgba(255,255,255,.12); --field-line: rgba(255,255,255,.2); --modal-bg: rgba(20,32,52,.72);
+    --panel-rgb: 255,255,255;
+  }
+  html[data-accent="cyan"] { --green: #35d6f0; --green-dim: #1b7f96; }
+  html[data-accent="violet"] { --green: #a78bfa; --green-dim: #5b46a8; }
+  html[data-accent="amber"] { --green: #f6c177; --green-dim: #a07a33; }
+  html[data-accent="rose"] { --green: #ff7aa2; --green-dim: #a83d5d; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; scrollbar-width: thin; scrollbar-color: #2b2e36 transparent; }
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2b2e36; border-radius: 9px; border: 2px solid transparent; background-clip: content-box; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3f49; background-clip: content-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--body-bg);
+    color: var(--text);
+    font: 15px/1.5 -apple-system, "Segoe UI", Roboto, sans-serif;
+    height: 100dvh; overflow: hidden;
+  }
+  .app { display: flex; height: calc(100dvh - 34px); padding: 14px; gap: 12px; }
+
+  .titlebar { height: 34px; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 18px; background: transparent; border-bottom: 1px solid rgba(255,255,255,.06); position: relative; z-index: 3; user-select: none; }
+  .tbBrand { display: flex; align-items: center; gap: 8px; font-size: 10.5px; letter-spacing: 3.5px; color: var(--muted); }
+  .tbDot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
+  .tbSpacer { flex: 1; }
+  .tbWinctl { display: flex; gap: 2px; }
+  .tbWinctl button { width: 38px; height: 24px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--muted); cursor: pointer; font-size: 12px; transition: background .15s ease, color .15s ease; }
+  .tbWinctl button:hover { background: rgba(255,255,255,.08); color: var(--text); }
+  .tbWinctl .tbClose:hover { background: #e0455c; color: #fff; }
+  body.inbrowser .tbWinctl { display: none; }
+
+  /* ---------- левый рейл ---------- */
+  .rail {
+    width: 64px; flex: 0 0 64px; background: rgba(var(--panel-rgb), var(--glass-a)); backdrop-filter: blur(14px);
+    border: 1px solid var(--line); border-radius: 18px;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 0; gap: 6px;
+  }
+  .rail .logo {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 2px solid #d8dbe1; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; color: #eef0f3; margin-bottom: 10px;
+    background: radial-gradient(circle at 30% 25%, #2a2d34, #14151a);
+  }
+  .rail button {
+    width: 40px; height: 40px; border-radius: 12px; border: 1px solid transparent;
+    background: transparent; color: #b9bdc6; font-size: 17px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rail button:hover { background: var(--hover); color: #fff; }
+  .rail button.on { border-color: var(--green-dim); color: var(--green); background: #17251c; }
+  .rail .spacer { flex: 1; }
+
+  /* ---------- центральная панель ---------- */
+  .main {
+    flex: 1; min-width: 0; background: rgba(var(--panel-rgb), var(--glass-a)); backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,.07); border-radius: 18px; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .topbar { display: flex; align-items: center; gap: 10px; padding: 14px 20px 10px; }
+  .brand { font-size: 19px; letter-spacing: 3px; font-weight: 700; }
+  .brand span { color: var(--green); }
+  .topbar .ver { font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-left: 6px; }
+  .topbar .spacer { flex: 1; }
+  .chip {
+    font-size: 11.5px; color: var(--muted); border: 1px solid var(--line);
+    border-radius: 20px; padding: 4px 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: #5c616b; }
+  .chip.ready .dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+  #chat { flex: 1; overflow-y: auto; padding: 8px 22px 4px; display: flex; flex-direction: column; gap: 14px; }
+  .msg { max-width: 92%; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .bot { align-self: flex-start; color: #dfe2e7; font-size: 15.5px; line-height: 1.6; }
+  .me {
+    align-self: flex-end;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.16);
+    color: var(--text);
+    padding: 11px 16px;
+    border-radius: 20px;
+    border-bottom-right-radius: 8px;
+    font-size: 15px;
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    box-shadow: 0 10px 26px -14px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  html[data-theme="light"] .me {
+    background: rgba(255,255,255,.62);
+    border-color: rgba(0,0,0,.10);
+    box-shadow: 0 10px 26px -16px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.7);
+  }
+  .err { align-self: flex-start; color: var(--err); font-size: 14px; }
+  .note { align-self: flex-start; color: var(--muted); font-size: 13px; }
+  .steps { align-self: flex-start; width: 100%; }
+  .steps summary { cursor: pointer; color: var(--green-dim); font-size: 12.5px; }
+  .step { background: #12141a; border: 1px solid #22242c; border-radius: 10px; padding: 8px 10px; margin-top: 6px; font: 12px/1.5 Consolas, monospace; color: #a9aeb8; white-space: pre-wrap; }
+
+  .statusline { padding: 6px 22px 0; color: var(--muted); font-size: 12.5px; display: flex; align-items: center; gap: 8px; }
+  .statusline .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green); opacity: .25; }
+  .statusline.busy .pulse { animation: pulse 1s infinite; opacity: 1; }
+  @keyframes pulse { 0%,100% { opacity: .25 } 50% { opacity: 1 } }
+
+  .composer {
+    margin: 8px 16px 16px; background: #1b1c22; border: 1px solid #2b2e36; border-radius: 16px;
+    padding: 10px 12px; display: flex; align-items: flex-end; gap: 8px;
+  }
+  #input {
+    flex: 1; resize: none; min-height: 40px; max-height: 130px; background: transparent;
+    color: var(--text); border: 0; outline: none; font: inherit; font-size: 15px; padding: 6px 4px;
+  }
+  #input::placeholder { color: #6e737d; }
+  .cbtn {
+    width: 38px; height: 38px; border-radius: 12px; border: 1px solid #2e313a; background: #22242b;
+    color: #cfd3da; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center;
+  }
+  .cbtn:hover { border-color: #3c404a; color: #fff; }
+  .cbtn.send { background: linear-gradient(180deg, #2fbf6b, #1f9a55); border-color: transparent; color: #08130c; font-weight: 700; }
+  .cbtn.mic.rec { border-color: var(--green); color: var(--green); box-shadow: 0 0 12px rgba(53,224,122,.35); }
+  .modechip {
+    height: 38px; padding: 0 12px; border-radius: 12px; border: 1px solid #2e313a; background: #22242b;
+    color: #cfd3da; font-size: 12.5px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+  }
+  .modechip.on { border-color: var(--green-dim); color: var(--green); background: #17251c; }
+
+  /* ---------- сфера ---------- */
+  .viz {
+    width: 34%; max-width: 420px; flex: 0 0 auto; background: rgba(var(--panel-rgb), var(--glass-a)); backdrop-filter: blur(14px);
+    border: 1px solid var(--line); border-radius: 18px; position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
+    padding: 24px 0 44px;
+  }
+  #sphere { width: 100%; height: 100%; display: block; }
+   .viz .by { position: absolute; bottom: 14px; width: 100%; text-align: center; font-size: 10px; letter-spacing: 3px; color: #4d525c; }
+   .actHead { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding: 0 22px; margin: 0; }
+   .actNow { margin: 10px 22px 0; font-size: 14.5px; line-height: 1.45; color: var(--text); word-break: break-word; }
+   .actThought { margin: 8px 22px 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); white-space: pre-wrap; max-height: 30vh; overflow-y: auto; }
+   .actLog { margin: 12px 22px 0; flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+   .actRow { font-size: 11.5px; color: var(--muted); padding: 5px 0; border-bottom: 1px solid var(--line); word-break: break-word; }
+
+  /* ---------- панель чатов ---------- */
+  .drawer {
+    position: fixed; top: 14px; bottom: 14px; left: 88px; width: 300px; background: #14151a;
+    border: 1px solid var(--line); border-radius: 16px; z-index: 40; display: none; flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0,0,0,.55);
+  }
+  .drawer.open { display: flex; }
+  .drawer h3 { margin: 0; padding: 14px 16px 8px; font-size: 13px; letter-spacing: 1px; color: var(--muted); font-weight: 600; }
+  .drawer .list { flex: 1; overflow-y: auto; padding: 0 10px 10px; }
+  .chatitem { display: flex; align-items: center; gap: 8px; padding: 10px; border-radius: 10px; cursor: pointer; color: #b6bac3; font-size: 14px; }
+  .chatitem:hover { background: #1d1f25; color: #fff; }
+  .chatitem.active { background: #202329; color: #fff; }
+  .chatitem .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chatitem .badge { font-size: 10px; padding: 2px 6px; border-radius: 6px; background: #1b3324; color: var(--green); }
+  .chatitem .del { opacity: 0; border: 0; background: none; color: #767b85; cursor: pointer; }
+  .chatitem:hover .del { opacity: 1; }
+  .drawer .new { margin: 0 12px 12px; }
+
+  /* ---------- настройки ---------- */
+  .overlay { position: fixed; inset: 0; background: rgba(5,6,8,.7); display: none; align-items: center; justify-content: center; z-index: 60; padding: 16px; }
+  .overlay.open { display: flex; }
+  .modal { width: 540px; max-width: 100%; background: var(--modal-bg); border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
+  .modal h2 { margin: 0 0 14px; font-size: 16px; letter-spacing: 1px; }
+  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+  .field label { font-size: 12px; color: var(--muted); }
+  .field input, .field select { background: var(--field-bg); color: var(--text); border: 1px solid var(--field-line); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+  .themes { display: flex; gap: 8px; }
+  .themeCard { flex: 1; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 8px; font-size: 12.5px; cursor: pointer; }
+  .themeCard .tsw { display: block; width: 100%; height: 34px; border-radius: 7px; border: 1px solid var(--line); }
+  .themeCard:hover { border-color: var(--green-dim); }
+  .themeCard.sel { border-color: var(--green); box-shadow: 0 0 0 1px var(--green) inset; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .swatch.pick { border-color: var(--field-line); padding: 0; overflow: hidden; }
+  .fxrow { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fxchip { background: var(--panel2); color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; }
+  .fxchip:hover { color: var(--text); border-color: var(--green-dim); }
+  .fxchip.sel { color: var(--green); border-color: var(--green); background: rgba(var(--panel-rgb), .9); box-shadow: 0 0 14px -6px var(--green); }
+  #glassRange { width: 100%; accent-color: var(--green); }
+  #fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .app { position: relative; z-index: 1; }
+  .swatch { width: 34px; height: 34px; border-radius: 50%; border: 2px solid transparent; background: var(--sw); cursor: pointer; box-shadow: 0 0 14px -4px var(--sw); }
+  .swatch.sel { border-color: var(--text); transform: scale(1.06); }
+  .row { display: flex; gap: 10px; }
+  .row .field { flex: 1; }
+  .switches { display: flex; gap: 18px; margin: 6px 0 12px; flex-wrap: wrap; }
+  .sw { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #b6bac3; cursor: pointer; }
+  .hint { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn { border: 1px solid #2e313a; background: #1c1d23; color: var(--text); padding: 9px 14px; border-radius: 10px; font-size: 13.5px; cursor: pointer; }
+  .btn.primary { background: linear-gradient(180deg, #2fbf6b, #1f9a55); border-color: transparent; color: #08130c; font-weight: 700; }
+
+  @media (max-width: 980px) { .viz { display: none; } }
+  @media (max-width: 760px) {
+    .app { padding: 8px; gap: 8px; }
+    .rail { width: 54px; flex-basis: 54px; border-radius: 14px; }
+    .rail button { width: 36px; height: 36px; }
+    .main { border-radius: 14px; }
+    #chat { padding: 6px 14px 4px; }
+    .statusline { padding: 6px 14px 0; }
+    .composer { margin: 8px 10px 12px; }
+    .brand { font-size: 16px; letter-spacing: 2px; }
+    .drawer { left: 74px; width: calc(100% - 90px); }
+  }
+  /* ---------- iOS 18: liquid glass ---------- */
+  body { background: var(--bg); }
+  .rail, .main, .viz, .drawer, .modal { border-radius: 28px; }
+  .rail, .main, .viz {
+    background: rgba(255,255,255,.055);
+    backdrop-filter: blur(34px) saturate(180%);
+    -webkit-backdrop-filter: blur(34px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 26px 60px -32px rgba(0,0,0,.9);
+  }
+  .rail button { border-radius: 16px; }
+  .rail button:hover { background: rgba(255,255,255,.12); }
+  .rail button.on { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.20); }
+
+  .composer {
+    border-radius: 26px;
+    background: rgba(255,255,255,.085);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 18px 46px -26px rgba(0,0,0,.9);
+  }
+  .cbtn {
+    border-radius: 15px;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.14);
+    color: var(--text);
+  }
+  .cbtn:hover { background: rgba(255,255,255,.16); }
+  .cbtn.send {
+    border-radius: 15px;
+    background: var(--green);
+    border-color: transparent;
+    color: #06130b;
+    box-shadow: 0 10px 22px -12px var(--green), inset 0 1px 0 rgba(255,255,255,.35);
+  }
+  .modechip {
+    border-radius: 999px;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.14);
+    color: var(--text);
+  }
+  .modechip.on {
+    background: rgba(255,255,255,.18);
+    border-color: rgba(255,255,255,.24);
+    color: var(--text);
+  }
+  .modal {
+    background: rgba(255,255,255,.085);
+    backdrop-filter: blur(42px) saturate(180%);
+    -webkit-backdrop-filter: blur(42px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 34px 90px -44px #000, inset 0 1px 0 rgba(255,255,255,.16);
+  }
+  .overlay { background: rgba(6,7,10,.50); backdrop-filter: blur(6px); }
+  .btn { border-radius: 999px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.14); color: var(--text); }
+  .btn:hover { background: rgba(255,255,255,.16); }
+  .btn.primary { border-radius: 999px; background: var(--green); border-color: transparent; color: #06130b; }
+  .field input, .field select, .field textarea {
+    border-radius: 16px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+  }
+  .chip { border-radius: 999px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.14); }
+  .drawer {
+    background: rgba(255,255,255,.055);
+    backdrop-filter: blur(34px) saturate(180%);
+    -webkit-backdrop-filter: blur(34px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 26px 60px -32px rgba(0,0,0,.9);
+  }
+  .drawer h3 { color: rgba(233,235,238,.55); letter-spacing: 2px; }
+  .list .item, .list .chatItem, .drawer .item { border-radius: 14px; }
+  html[data-theme="light"] .drawer { background: rgba(255,255,255,.62); border-color: rgba(0,0,0,.08); }
+
+  .lanBadge {
+    position: fixed; right: 30px; bottom: 48px; width: 48px; height: 48px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.10);
+    backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%);
+    color: var(--text); font: 600 14px/1 "Segoe UI", sans-serif; cursor: pointer; z-index: 45;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    box-shadow: 0 10px 26px -14px #000, inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .lanBadge:hover { background: rgba(255,255,255,.18); }
+  .lanBadge .dot2 { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .lanList { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .lanMsg { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.10); border-radius: 14px; padding: 8px 12px; font-size: 13.5px; color: var(--text); word-break: break-word; }
+  .lanMsg b { color: var(--green); font-weight: 600; }
+  .lanMsg .t { color: var(--muted); font-size: 11px; margin-left: 8px; }
+  .lanRow { display: flex; gap: 8px; margin-top: 12px; }
+  .lanRow input { flex: 1; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; color: var(--text); padding: 10px 12px; font-size: 14px; outline: none; }
+  #lanOverlay .modal { padding-bottom: 26px; }
+  #lanOverlay .actions { margin-top: 22px; display: flex; justify-content: flex-end; }
+  #lanOverlay .actions .btn { min-width: 140px; }
+  .step, .note, .steps { border-radius: 16px; }
+  .titlebar { background: transparent; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .statusline { color: rgba(233,235,238,.55); }
+
+  html[data-theme="light"] .rail,
+  html[data-theme="light"] .main,
+  html[data-theme="light"] .viz {
+    background: rgba(255,255,255,.62);
+    border-color: rgba(0,0,0,.08);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 24px 60px -34px rgba(0,0,0,.35);
+  }
+  html[data-theme="light"] .composer,
+  html[data-theme="light"] .modal {
+    background: rgba(255,255,255,.72);
+    border-color: rgba(0,0,0,.08);
+  }
+  html[data-theme="light"] .cbtn,
+  html[data-theme="light"] .modechip,
+  html[data-theme="light"] .btn,
+  html[data-theme="light"] .field input,
+  html[data-theme="light"] .field select {
+    background: rgba(0,0,0,.05);
+    border-color: rgba(0,0,0,.10);
+    color: var(--text);
+  }
+  /* ---------- зимнее оформление ---------- */
+  body.season-winter::before {
+    content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: 110px; pointer-events: none; z-index: 2;
+    background:
+      radial-gradient(120% 100% at 15% 100%, rgba(255,255,255,.20), rgba(255,255,255,0) 70%),
+      radial-gradient(110% 100% at 62% 100%, rgba(255,255,255,.16), rgba(255,255,255,0) 72%),
+      radial-gradient(130% 100% at 95% 100%, rgba(255,255,255,.14), rgba(255,255,255,0) 70%);
+    filter: blur(3px);
+  }
+  body.season-winter::after {
+    content: '🎅'; position: fixed; left: 6px; top: 32px; font-size: 24px; z-index: 6;
+    pointer-events: none; transform: rotate(-16deg); filter: drop-shadow(0 6px 10px rgba(0,0,0,.5));
+  }
+</style>
+</head>
+<body>
+<div class="titlebar" id="titlebar">
+  <div class="tbBrand"><span class="tbDot"></span>КЛОДОКС</div>
+  <div class="tbSpacer"></div>
+  <div class="tbWinctl" id="tbWinctl">
+    <button data-act="min" title="Свернуть">—</button>
+    <button data-act="max" title="Развернуть">□</button>
+    <button data-act="close" class="tbClose" title="Закрыть">✕</button>
+  </div>
+</div>
+<div class="app">
+  <nav class="rail">
+    <div class="logo">C</div>
+    <button id="newChat" title="Новый чат">+</button>
+    <button id="chatsBtn" title="Чаты">☰</button>
+    <button id="clearBtn" title="Настройки">✕</button>
+    <button id="agentsBtn" title="Агенты">🤖</button>
+    <div class="spacer"></div>
+    <button id="settingsBtn" title="Настройки">⚙</button>
+    <button id="infoBtn" title="О программе">◔</button>
+  </nav>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="brand">КЛОДОКС<span>.</span></div>
+      <div class="ver">PRO</div>
+      <div class="spacer"></div>
+      <div class="chip ready" id="stateChip"><span class="dot"></span><span id="stateText">готов</span></div>
+    </div>
+
+    <div id="chat"></div>
+
+    <div class="statusline" id="statusline"><span class="pulse"></span><span id="statusText">Ход работы — ожидание</span></div>
+
+    <div class="composer">
+      <button class="cbtn" id="attachBtn" title="Вставить из буфера">⛓</button>
+      <textarea id="input" rows="1" placeholder="Введите текст..."></textarea>
+      <button class="modechip" id="agentChip" title="Режим агента: файлы и команды">Гибрид</button>
+      <button class="cbtn send" id="sendBtn" title="Отправить">→</button>
+    </div>
+  </main>
+
+  <aside class="viz">
+    <div class="actHead">сейчас</div>
+    <div class="actNow" id="actNow">ожидание</div>
+    <div class="actHead" style="margin-top:20px">о чём думает</div>
+    <div class="actThought" id="actThought">—</div>
+    <div class="actHead" style="margin-top:18px">ход работы</div>
+    <div class="actLog" id="actLog"></div>
+    <div class="by">КЛОДОКС</div>
+  </aside>
+</div>
+
+<button class="lanBadge" id="lanBadge" title="Люди в сети"><span class="dot2"></span><span id="lanCount">0</span></button>
+
+<div class="overlay" id="lanOverlay">
+  <div class="modal">
+    <h2>СЕТЬ</h2>
+    <div class="hint" id="lanHint">ищу людей в сети…</div>
+    <div class="lanList" id="lanList"></div>
+    <div class="lanRow">
+      <input id="lanInput" placeholder="Сообщение всем в этой сети">
+      <button class="btn primary" id="lanSend">Отправить</button>
+    </div>
+    <div class="actions">
+      <button class="btn" id="lanClose">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="drawer" id="drawer">
+  <h3>ЧАТЫ</h3>
+  <div class="list" id="chatlist"></div>
+  <button class="btn new" id="drawerNew">+ Новый чат</button>
+</div>
+
+<div class="overlay" id="agentsOverlay">
+  <div class="modal">
+    <h2>Агенты</h2>
+    <div class="hint" id="agentsHint">Загружаю...</div>
+    <div id="agentsList" style="max-height:170px;overflow:auto;margin-bottom:14px"></div>
+    <div class="row">
+      <div class="field">
+        <label>Имя (латиницей)</label>
+        <input id="agName" placeholder="например text-checker">
+      </div>
+      <div class="field">
+        <label>Инструменты</label>
+        <input id="agTools" value="Read, Grep, Glob">
+      </div>
+    </div>
+    <div class="field">
+      <label>Запрос — что должен делать агент</label>
+      <input id="agDesc" placeholder="например: проверяет тексты на ошибки и стиль, отвечает списком">
+    </div>
+    <div class="actions">
+      <button class="btn" id="closeAgents">Закрыть</button>
+      <button class="btn primary" id="createAgent">Создать</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>Настройки</h2>
+    <div class="field">
+      <label>Тема</label>
+      <div class="themes">
+        <button class="themeCard" data-t="dark"><span class="tsw" style="background:linear-gradient(135deg,#16171b,#0d0e11)"></span>Тёмная</button>
+        <button class="themeCard" data-t="midnight"><span class="tsw" style="background:linear-gradient(135deg,#101a2b,#050810)"></span>Полночь</button>
+        <button class="themeCard" data-t="light"><span class="tsw" style="background:linear-gradient(135deg,#ffffff,#dfe3ec)"></span>Светлая</button>
+        <button class="themeCard" data-t="graphite"><span class="tsw" style="background:linear-gradient(135deg,#2b2f36,#101215)"></span>Графит</button>
+        <button class="themeCard" data-t="ocean"><span class="tsw" style="background:linear-gradient(135deg,#0b2a45,#02101c)"></span>Океан</button>
+        <button class="themeCard" data-t="forest"><span class="tsw" style="background:linear-gradient(135deg,#0f2a20,#04120c)"></span>Лес</button>
+        <button class="themeCard" data-t="neon"><span class="tsw" style="background:linear-gradient(135deg,#2a0b3d,#0a0414)"></span>Неон</button>
+        <button class="themeCard" data-t="glass"><span class="tsw" style="background:linear-gradient(135deg,rgba(255,255,255,.35),rgba(120,160,255,.18))"></span>Стекло</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Эффект на фоне</label>
+      <div class="fxrow">
+        <button class="fxchip" data-f="none">нет</button>
+        <button class="fxchip" data-f="snow">снег</button>
+        <button class="fxchip" data-f="rain">дождь</button>
+        <button class="fxchip" data-f="stars">звёзды</button>
+        <button class="fxchip" data-f="rgb">RGB</button>
+        <button class="fxchip" data-f="fog">туман</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Цвет подсветки</label>
+      <div class="swatches">
+        <button class="swatch" data-a="green" style="--sw:#35e07a"></button>
+        <button class="swatch" data-a="cyan" style="--sw:#35d6f0"></button>
+        <button class="swatch" data-a="violet" style="--sw:#a78bfa"></button>
+        <button class="swatch" data-a="amber" style="--sw:#f6c177"></button>
+        <button class="swatch" data-a="rose" style="--sw:#ff7aa2"></button>
+        <button class="swatch" data-a="red" style="--sw:#ff5c5c"></button>
+        <button class="swatch" data-a="blue" style="--sw:#5c9dff"></button>
+        <button class="swatch" data-a="teal" style="--sw:#3ddcbf"></button>
+        <button class="swatch" data-a="lime" style="--sw:#c8f560"></button>
+        <button class="swatch" data-a="white" style="--sw:#e8ecf2"></button>
+        <input type="color" id="accentPick" class="swatch pick" value="#35e07a" title="Свой цвет">
+      </div>
+    </div>
+    <div class="field">
+      <label>Прозрачность панелей</label>
+      <input type="range" id="glassRange" min="0.15" max="0.95" step="0.01" value="0.62">
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Сервис</label>
+        <select id="provider"></select>
+      </div>
+      <div class="field">
+        <label>Модель</label>
+        <input id="model" placeholder="по умолчанию">
+      </div>
+    </div>
+    <div class="field">
+      <label>Ключ сервиса (хранится только в этом браузере)</label>
+      <input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="вставьте свой ключ">
+    </div>
+    <div class="field">
+      <label>PIN доступа</label>
+      <input id="pin" type="password" autocomplete="off" placeholder="нужен для режима агента">
+    </div>
+    <div class="field">
+      <label>Имя в сети — видно другим в чате сети</label>
+      <input id="netName" maxlength="24" placeholder="например ПК-417">
+    </div>
+    <div class="field">
+      <label>Обновления</label>
+      <div class="lanRow">
+        <input id="updInfo" readonly value="версия —">
+        <button class="btn" id="updCheck">Проверить</button>
+        <button class="btn primary" id="updApply">Обновить</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Перенос чата в другой ИИ и обратно</label>
+      <div class="lanRow">
+        <button class="btn" id="chatExport">Экспорт кода</button>
+        <button class="btn primary" id="chatImportBtn">Импорт кода</button>
+      </div>
+      <textarea id="chatCode" rows="3" placeholder="Код чата: нажмите «Экспорт» или вставьте код от другого ИИ"></textarea>
+    </div>
+    <div class="hint" id="hintLine"></div>
+    <div class="actions">
+      <button class="btn" id="closeSettings">Закрыть</button>
+      <button class="btn primary" id="saveSettings">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var LS = 'aiweb_v3';
+  var providers = {};
+  var state = {
+    chats: [], activeId: null,
+    settings: { provider: '', model: '', key: '', pin: '', tts: true, autoSend: true, voice: '', rate: 1.03 }
+  };
+  var cfgInfo = { pinRequired: false, workdir: '' };
+  var busy = false;
+  var $ = function (id) { return document.getElementById(id); };
+  var chatEl = $('chat');
+
+  /* ---------- состояние ---------- */
+  function load() {
+    try {
+      var s = JSON.parse(localStorage.getItem(LS) || '{}');
+      if (Array.isArray(s.chats)) state.chats = s.chats;
+      if (s.activeId) state.activeId = s.activeId;
+      if (s.settings) {
+        for (var k in s.settings) state.settings[k] = s.settings[k];
+      }
+    } catch (e) { }
+  }
+  function save() { localStorage.setItem(LS, JSON.stringify(state)); }
+  function uid() { return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function activeChat() {
+    for (var i = 0; i < state.chats.length; i++) if (state.chats[i].id === state.activeId) return state.chats[i];
+    return null;
+  }
+  function newChat(agent) {
+    var c = { id: uid(), title: 'Новый чат', agent: !!agent, messages: [] };
+    state.chats.unshift(c);
+    state.activeId = c.id;
+    save(); renderChats(); renderMessages();
+    return c;
+  }
+
+  /* ---------- отрисовка ---------- */
+  function renderChats() {
+    var box = $('chatlist');
+    box.innerHTML = '';
+    state.chats.forEach(function (c) {
+      var d = document.createElement('div');
+      d.className = 'chatitem' + (c.id === state.activeId ? ' active' : '');
+      var t = document.createElement('span'); t.className = 't'; t.textContent = c.title || 'Без названия';
+      var b = document.createElement('span'); b.className = 'badge'; b.textContent = 'агент';
+      if (!c.agent) b.style.display = 'none';
+      var del = document.createElement('button'); del.className = 'del'; del.textContent = '✕';
+      del.onclick = function (e) {
+        e.stopPropagation();
+        state.chats = state.chats.filter(function (x) { return x.id !== c.id; });
+        if (state.activeId === c.id) state.activeId = state.chats[0] ? state.chats[0].id : null;
+        save(); renderChats(); renderMessages();
+      };
+      d.onclick = function () { state.activeId = c.id; save(); renderChats(); renderMessages(); $('drawer').classList.remove('open'); };
+      d.appendChild(t); d.appendChild(b); d.appendChild(del);
+      box.appendChild(d);
+    });
+  }
+
+  function bubble(text, cls) {
+    var d = document.createElement('div');
+    d.className = 'msg ' + cls;
+    d.textContent = text;
+    chatEl.appendChild(d);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return d;
+  }
+  function note(text) { var d = document.createElement('div'); d.className = 'note'; d.textContent = text; chatEl.appendChild(d); }
+
+  function renderSteps(steps) {
+    if (!steps || !steps.length) return;
+    var wrap = document.createElement('details');
+    wrap.className = 'steps';
+    var sum = document.createElement('summary');
+    sum.textContent = 'Действия агента (' + steps.length + ')';
+    wrap.appendChild(sum);
+    steps.forEach(function (s) {
+      var d = document.createElement('div');
+      d.className = 'step';
+      d.textContent = s.tool + ' ' + JSON.stringify(s.args) + '\n→ ' + s.result;
+      wrap.appendChild(d);
+    });
+    chatEl.appendChild(wrap);
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  function renderMessages() {
+    chatEl.innerHTML = '';
+    var c = activeChat();
+    if (!c) { $('agentChip').classList.remove('on'); note('Создайте чат или напишите сообщение.'); return; }
+    $('agentChip').classList.toggle('on', !!c.agent);
+    if (!c.messages.length) {
+      note(c.agent
+        ? 'Гибридный режим: агент читает и пишет файлы, запускает команды в ' + (cfgInfo.workdir || 'рабочей папке') + '.'
+        : 'Обычный чат. Нажмите «Гибрид», чтобы дать доступ к файлам и командам.');
+    }
+    c.messages.forEach(function (m) {
+      if (m.role === 'user') bubble(m.content, 'me');
+      else if (m.role === 'error') bubble(m.content, 'err');
+      else if (m.role === 'steps') renderSteps(m.content);
+      else bubble(m.content, 'bot');
+    });
+  }
+
+  function setStatus(text, isBusy) {
+    $('statusText').textContent = 'Ход работы — ' + text;
+    $('statusline').classList.toggle('busy', !!isBusy);
+    $('stateText').textContent = isBusy ? 'работает' : 'готов';
+    $('stateChip').classList.toggle('ready', !isBusy);
+  }
+
+  /* ---------- диалог ---------- */
+  async function loadConfig() {
+    try {
+      var r = await fetch('/api/config');
+      cfgInfo = await r.json();
+      providers = cfgInfo.providers || {};
+      var sel = $('provider');
+      sel.innerHTML = '';
+      Object.keys(providers).forEach(function (k) {
+        var o = document.createElement('option');
+        o.value = k; o.textContent = providers[k].title || k;
+        sel.appendChild(o);
+      });
+      var dp = cfgInfo.defaultProvider;
+      var hasKey = !!state.settings.key;
+      if (!state.settings.provider || (!hasKey && state.settings.provider !== 'omni')) {
+        state.settings.provider = (dp && providers[dp]) ? dp : Object.keys(providers)[0];
+      }
+      if (cfgInfo.pin && !state.settings.pin) state.settings.pin = cfgInfo.pin;
+      save();
+      $('hintLine').textContent = cfgInfo.pinRequired
+        ? 'Агент включён. Рабочая папка: ' + cfgInfo.workdir
+        : 'Агент выключен: задайте "pin" в web/config.json и перезапустите сервер.';
+      fillSettings();
+    } catch (e) { note('Сервер не отвечает. Запущен ли web.bat?'); }
+  }
+
+  function fillSettings() {
+    $('provider').value = state.settings.provider || '';
+    $('model').value = state.settings.model || '';
+    $('key').value = state.settings.key || '';
+    $('pin').value = state.settings.pin || '';
+    if ($('netName')) $('netName').value = localStorage.getItem('klodoks.name') || '';
+  }
+
+  function applyTtsButton() {}
+
+  function populateVoices() {
+    if (!('speechSynthesis' in window)) return;
+    var sel = $('voiceSel');
+    if (!sel) return;
+    var voices = window.speechSynthesis.getVoices() || [];
+    var prev = state.settings.voice || sel.value || '';
+    sel.innerHTML = '';
+    var o0 = document.createElement('option');
+    o0.value = ''; o0.textContent = 'по умолчанию (русский, если есть)';
+    sel.appendChild(o0);
+    var hasRu = false;
+    voices.forEach(function (v) {
+      var o = document.createElement('option');
+      o.value = v.name;
+      var isRu = /^ru/i.test(v.lang || '');
+      if (isRu) hasRu = true;
+      o.textContent = (isRu ? '★ ' : '') + v.name + ' (' + v.lang + ')';
+      sel.appendChild(o);
+    });
+    if (prev) sel.value = prev;
+    if (!hasRu) {
+      var h = $('hintLine');
+      if (h) h.textContent = h.textContent + ' Русского голоса в системе нет — добавьте: Параметры → Время и язык → Язык и регион → Добавить язык → Русский → Дополнительные компоненты → Речь.';
+    }
+  }
+
+  async function send() {
+    if (busy) return;
+    var input = $('input');
+    var text = input.value.trim();
+    if (!text) return;
+
+    if (/клод\s+клод\s+погод/i.test(text)) {
+      try { localStorage.setItem('klodoks.secret', String(Date.now() + 86400000)); } catch (e) { }
+      applySeason();
+      input.value = '';
+      bubble(text, 'me');
+      note('Секретные стили включены на 24 часа');
+      setStatus('секретные стили включены', false);
+      return;
+    }
+
+    var c = activeChat() || newChat(false);
+    var isLocal = state.settings.provider === 'omni';
+    if (!state.settings.key && !isLocal) { openSettings(); note('Сначала укажите ключ в настройках.'); return; }
+
+    input.value = '';
+    input.style.height = 'auto';
+
+    c.messages.push({ role: 'user', content: text });
+    if (c.messages.length === 1) c.title = text.slice(0, 40);
+    save(); renderChats(); bubble(text, 'me');
+
+    busy = true;
+    setStatus('думает', true);
+    var typing = bubble('...', 'bot');
+
+    var useAgent = !!c.agent;
+    var history = c.messages.map(function (m) {
+      return { role: m.role === 'user' ? 'user' : 'assistant', content: m.content };
+    });
+
+    try {
+      var r = await fetch(useAgent ? '/api/agent' : '/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: state.settings.provider,
+          model: state.settings.model,
+          key: state.settings.key,
+          pin: state.settings.pin,
+          messages: history
+        })
+      });
+      var data = await r.json();
+      typing.remove();
+
+      if (data.steps && data.steps.length) { c.messages.push({ role: 'steps', content: data.steps }); renderSteps(data.steps); }
+
+      if (data.error) {
+        c.messages.push({ role: 'error', content: 'Ошибка: ' + data.error });
+        bubble('Ошибка: ' + data.error, 'err');
+        setStatus('ошибка', false);
+      } else {
+        c.messages.push({ role: 'assistant', content: data.reply });
+        bubble(data.reply, 'bot');
+        setStatus('готово', false);
+        speak(data.reply);
+      }
+      save();
+    } catch (e) {
+      typing.remove();
+      c.messages.push({ role: 'error', content: 'Сеть: ' + e.message });
+      bubble('Сеть: ' + e.message, 'err');
+      setStatus('ошибка', false);
+    } finally {
+      busy = false;
+    }
+  }
+
+  /* ---------- голос: озвучка ---------- */
+  function pickVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    var voices = window.speechSynthesis.getVoices() || [];
+    var want = state.settings.voice || '';
+    for (var i = 0; i < voices.length; i++) if (voices[i].name === want) return voices[i];
+    for (var j = 0; j < voices.length; j++) if (/^ru/i.test(voices[j].lang || '')) return voices[j];
+    return null;
+  }
+
+  function speak(text) {
+    return;
+  }
+
+  /* ---------- голос: распознавание ---------- */
+  var recognition = null;
+  var listening = false;
+
+  function initRecognition() {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return null;
+    var r = new SR();
+    r.lang = 'ru-RU';
+    r.interimResults = true;
+    r.continuous = false;
+    r.maxAlternatives = 1;
+
+    r.onstart = function () { listening = true; $('micBtn').classList.add('rec'); setStatus('слушаю', true); };
+    r.onerror = function (e) {
+      listening = false; $('micBtn').classList.remove('rec');
+      var code = e.error || '';
+      var map = {
+        'not-allowed': 'доступ к микрофону запрещён — разрешите его в настройках Windows и браузера',
+        'service-not-allowed': 'служба распознавания недоступна (нужен Chrome или Edge)',
+        'no-speech': 'не услышал — попробуйте ещё раз',
+        'audio-capture': 'микрофон не найден',
+        'network': 'служба распознавания недоступна (нет сети или она заблокирована) — используйте ввод текстом'
+      };
+      setStatus(map[code] || ('ошибка голоса: ' + (code || 'нет доступа')), false);
+    };
+    r.onend = function () {
+      listening = false; $('micBtn').classList.remove('rec');
+      if ($('statusText').textContent.indexOf('слушаю') >= 0) setStatus('ожидание', false);
+    };
+    r.onresult = function (ev) {
+      var finalText = '';
+      var interim = '';
+      for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        var t = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) finalText += t; else interim += t;
+      }
+      var box = $('input');
+      if (interim) box.value = interim;
+      if (finalText) {
+        box.value = finalText.trim();
+        if (handleVoiceCommand(box.value)) { box.value = ''; return; }
+        if (state.settings.autoSend !== false) send();
+      }
+    };
+    return r;
+  }
+
+  async function doAction(action, arg) {
+    try {
+      var r = await fetch('/api/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: state.settings.pin, action: action, arg: arg })
+      });
+      var d = await r.json();
+      var msg = d.error ? ('не получилось: ' + d.error) : (d.done || 'готово');
+      setStatus(msg, false);
+      note(msg);
+    } catch (e) {
+      setStatus('ошибка действия: ' + e.message, false);
+    }
+  }
+
+  function handleVoiceCommand(text) {
+    var t = text.toLowerCase().replace(/[.,!?]/g, ' ').trim();
+    var c = activeChat();
+
+    if (cfgInfo.mode === 'jarvis') {
+      var open = t.match(/(?:открой|включи)\s+(.+)/);
+      if (open) {
+        var what = open[1];
+        var url = null;
+        if (/ютуб|youtube/.test(what)) url = 'https://www.youtube.com';
+        else if (/google|гугл/.test(what)) url = 'https://www.google.com';
+        else if (/яндекс/.test(what)) url = 'https://ya.ru';
+        if (url) { doAction('open_url', url); return true; }
+      }
+      if (/громче|прибавь громкость/.test(t)) { doAction('volume', 'up'); return true; }
+      if (/тише|убавь громкость/.test(t)) { doAction('volume', 'down'); return true; }
+      if (/(выключи|убери) звук|мут/.test(t)) { doAction('volume', 'mute'); return true; }
+      if (/пауза|плей|включи музыку|останови музыку/.test(t)) { doAction('media', ''); return true; }
+      var app = t.match(/запусти\s+(.+)/);
+      if (app) { doAction('open_app', app[1].trim()); return true; }
+    }
+
+    if (/^(новый чат|новый)/.test(t)) { newChat(false); setStatus('создан новый чат', false); return true; }
+    if (/(очисти|очистить) чат/.test(t)) { if (c) { c.messages = []; save(); renderMessages(); } setStatus('чат очищен', false); return true; }
+    if (/(включи|вруби) агент/.test(t) || /гибрид/.test(t)) { if (!c) c = newChat(true); c.agent = true; save(); renderMessages(); setStatus('агент включён', false); return true; }
+    if (/(выключи|отключи) агент/.test(t)) { if (c) { c.agent = false; save(); renderMessages(); } setStatus('агент выключен', false); return true; }
+    if (/(настройки|настройка)/.test(t)) { openSettings(); return true; }
+    if (/^(стоп|остановись|замолчи)/.test(t)) {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      setStatus('остановлено', false); return true;
+    }
+    if (/(озвуч|голос) (включи|вруби)/.test(t)) { state.settings.tts = true; save(); applyTtsButton(); setStatus('озвучка включена', false); return true; }
+    if (/(озвуч|голос) (выключи|отключи)/.test(t)) { state.settings.tts = false; save(); applyTtsButton(); setStatus('озвучка выключена', false); return true; }
+    return false;
+  }
+
+  /* ---------- сфера ---------- */
+  (function sphere() {
+    var cv = $('sphere');
+    if (!cv) return;
+    var ctx = cv.getContext('2d');
+    var pts = [];
+    var N = 380;
+    var golden = Math.PI * (3 - Math.sqrt(5));
+    for (var i = 0; i < N; i++) {
+      var y = 1 - (i / (N - 1)) * 2;
+      var r = Math.sqrt(1 - y * y);
+      var th = golden * i;
+      pts.push({ x: Math.cos(th) * r, y: y, z: Math.sin(th) * r });
+    }
+    var t = 0;
+    function draw() {
+      var w = cv.clientWidth, h = cv.clientHeight;
+      var dpr = window.devicePixelRatio || 1;
+      if (cv.width !== Math.floor(w * dpr) || cv.height !== Math.floor(h * dpr)) {
+        cv.width = Math.floor(w * dpr); cv.height = Math.floor(h * dpr);
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      var cx = w / 2, cy = h / 2;
+      var R = Math.min(w, h) * 0.34;
+      var glow = ctx.createRadialGradient(cx, cy, R * 0.2, cx, cy, R * 1.5);
+      glow.addColorStop(0, 'rgba(53,224,122,.10)');
+      glow.addColorStop(1, 'rgba(53,224,122,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, w, h);
+
+      t += 0.0042;
+      var ct = Math.cos(t), st = Math.sin(t);
+      var proj = [];
+      for (var i = 0; i < pts.length; i++) {
+        var p = pts[i];
+        var x = p.x * ct - p.z * st;
+        var z = p.x * st + p.z * ct;
+        var persp = 1 / (1.9 - z * 0.62);
+        proj.push({ X: cx + x * R * persp * 1.0, Y: cy + p.y * R * persp * 1.0, Z: z });
+      }
+
+      ctx.lineWidth = 0.6;
+      for (var a = 0; a < proj.length; a += 3) {
+        for (var b = a + 1; b < Math.min(a + 6, proj.length); b++) {
+          var dx = proj[a].X - proj[b].X, dy = proj[a].Y - proj[b].Y;
+          if (dx * dx + dy * dy < (R * 0.30) * (R * 0.30)) {
+            var al = 0.05 + 0.16 * ((proj[a].Z + proj[b].Z) / 2 + 1) / 2;
+            ctx.strokeStyle = 'rgba(53,224,122,' + al.toFixed(3) + ')';
+            ctx.beginPath(); ctx.moveTo(proj[a].X, proj[a].Y); ctx.lineTo(proj[b].X, proj[b].Y); ctx.stroke();
+          }
+        }
+      }
+
+      for (var k = 0; k < proj.length; k++) {
+        var q = proj[k];
+        var alpha = 0.25 + 0.75 * ((q.Z + 1) / 2);
+        var rad = 0.7 + 1.1 * ((q.Z + 1) / 2);
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(53,224,122,' + alpha.toFixed(3) + ')';
+        ctx.arc(q.X, q.Y, rad, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  /* ---------- настройки ---------- */
+  function openSettings() { fillSettings(); $('overlay').classList.add('open'); }
+
+  async function loadAgents() {
+    var box = $('agentsList');
+    if (!box) return;
+    box.innerHTML = '<div class="hint">Загружаю...</div>';
+    try {
+      var r = await fetch('/api/agents');
+      var d = await r.json();
+      $('agentsHint').textContent = 'Папка: ' + (d.dir || '');
+      var list = d.agents || [];
+      if (!list.length) { box.innerHTML = '<div class="hint">Агентов пока нет.</div>'; return; }
+      box.innerHTML = '';
+      list.forEach(function (a) {
+        var row = document.createElement('div');
+        row.className = 'step';
+        row.textContent = a.name + ' — ' + (a.description || 'без описания');
+        box.appendChild(row);
+      });
+    } catch (e) {
+      box.innerHTML = '<div class="hint">Не удалось загрузить список.</div>';
+    }
+  }
+
+  function openAgents() {
+    $('agentsOverlay').classList.add('open');
+    loadAgents();
+  }
+
+  async function createNewAgent() {
+    var name = $('agName').value.trim();
+    var desc = $('agDesc').value.trim();
+    var tools = $('agTools').value.trim();
+    if (!desc) { $('agentsHint').textContent = 'Опишите, что делает агент.'; return; }
+    try {
+      var r = await fetch('/api/agents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pin: state.settings.pin,
+          name: name,
+          request: desc,
+          tools: tools,
+          provider: state.settings.provider,
+          model: state.settings.model,
+          key: state.settings.key
+        })
+      });
+      var d = await r.json();
+      if (d.error) { $('agentsHint').textContent = 'Ошибка: ' + d.error; return; }
+      $('agName').value = '';
+      $('agDesc').value = '';
+      $('agentsHint').textContent = 'Создан агент «' + d.name + '». Перезапустите КЛОДОКС, чтобы он подхватился.';
+      loadAgents();
+    } catch (e) {
+      $('agentsHint').textContent = 'Ошибка: ' + e.message;
+    }
+  }
+
+  var PALETTE = {
+    green: ['#35e07a', '#1d7a45'], cyan: ['#35d6f0', '#1b7f96'], violet: ['#a78bfa', '#5b46a8'],
+    amber: ['#f6c177', '#a07a33'], rose: ['#ff7aa2', '#a83d5d'], red: ['#ff5c5c', '#a33333'],
+    blue: ['#5c9dff', '#2f5fa8'], teal: ['#3ddcbf', '#1f8a76'], lime: ['#c8f560', '#7d9c2a'],
+    white: ['#e8ecf2', '#8f96a3']
+  };
+
+  function shade(hex, k) {
+    var h = String(hex).replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var n = parseInt(h, 16);
+    if (isNaN(n)) return hex;
+    var r = Math.round(((n >> 16) & 255) * k);
+    var g = Math.round(((n >> 8) & 255) * k);
+    var b = Math.round((n & 255) * k);
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  function secretActive() {
+    try { return Number(localStorage.getItem('klodoks.secret') || 0) > Date.now(); } catch (e) { return false; }
+  }
+
+  function applySeason() {
+    var m = new Date().getMonth();
+    var winter = (m === 11 || m === 0 || m === 1);
+    document.body.classList.toggle('season-winter', winter || secretActive());
+  }
+
+  function applyTheme() {
+    var s = state.settings || {};
+    if (!s.theme) s.theme = 'neon';
+    if (!s.accent) s.accent = 'violet';
+    if (!s.fx) s.fx = 'snow';
+    var th = s.theme;
+    var ac = s.accent;
+    document.documentElement.setAttribute('data-theme', th);
+    var pair = PALETTE[ac];
+    var main = pair ? pair[0] : ac;
+    var dim = pair ? pair[1] : shade(ac, .45);
+    document.documentElement.style.setProperty('--green', main);
+    document.documentElement.style.setProperty('--green-dim', dim);
+    var ga = parseFloat(s.glass);
+    document.documentElement.style.setProperty('--glass-a', isFinite(ga) ? ga : 0.62);
+    var i;
+    var cards = document.querySelectorAll('.themeCard');
+    for (i = 0; i < cards.length; i++) cards[i].classList.toggle('sel', cards[i].getAttribute('data-t') === th);
+    var sw = document.querySelectorAll('.swatch[data-a]');
+    for (i = 0; i < sw.length; i++) sw[i].classList.toggle('sel', sw[i].getAttribute('data-a') === ac);
+    var fx = document.querySelectorAll('.fxchip');
+    var cur = s.fx || 'none';
+    for (i = 0; i < fx.length; i++) fx[i].classList.toggle('sel', fx[i].getAttribute('data-f') === cur);
+    var pick = $('accentPick');
+    if (pick && !pair) pick.value = main;
+    var gr = $('glassRange');
+    if (gr) gr.value = isFinite(ga) ? ga : 0.62;
+    startFx(cur);
+    applySeason();
+  }
+
+  var FX = { mode: 'none', raf: 0, items: [], t: 0 };
+
+  function startFx(mode) {
+    mode = mode || 'none';
+    var c = $('fx');
+    if (!c) {
+      c = document.createElement('canvas');
+      c.id = 'fx';
+      document.body.appendChild(c);
+    }
+    if (FX.raf) { cancelAnimationFrame(FX.raf); FX.raf = 0; }
+    FX.mode = mode;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = window.innerWidth, H = window.innerHeight;
+    c.width = Math.floor(W * dpr);
+    c.height = Math.floor(H * dpr);
+    var ctx = c.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    FX.items = [];
+    var i;
+    if (mode === 'none') return;
+    if (mode === 'snow' || mode === 'rain') {
+      var n = mode === 'snow' ? 150 : 230;
+      for (i = 0; i < n; i++) FX.items.push({ x: Math.random() * W, y: Math.random() * H, r: 1 + Math.random() * 2.4, v: 0.7 + Math.random() * 1.7, d: -0.4 + Math.random() * 0.8 });
+    } else if (mode === 'stars') {
+      for (i = 0; i < 170; i++) FX.items.push({ x: Math.random() * W, y: Math.random() * H, r: 0.4 + Math.random() * 1.5, p: Math.random() * 6.28, s: 0.7 + Math.random() * 1.7 });
+    } else if (mode === 'fog') {
+      for (i = 0; i < 14; i++) FX.items.push({ x: Math.random() * W, y: Math.random() * H, r: 90 + Math.random() * 170, v: 0.1 + Math.random() * 0.35 });
+    }
+    function frame() {
+      FX.t += 0.016;
+      if (FX.mode === 'rgb') {
+        var hue = (FX.t * 70) % 360;
+        var g = ctx.createLinearGradient(0, 0, W, H);
+        g.addColorStop(0, 'hsla(' + hue + ',90%,60%,.30)');
+        g.addColorStop(0.5, 'hsla(' + ((hue + 120) % 360) + ',90%,60%,.20)');
+        g.addColorStop(1, 'hsla(' + ((hue + 240) % 360) + ',90%,60%,.30)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+        FX.raf = requestAnimationFrame(frame);
+        return;
+      }
+      ctx.clearRect(0, 0, W, H);
+      if (FX.mode === 'snow') {
+        ctx.fillStyle = 'rgba(255,255,255,.88)';
+        for (i = 0; i < FX.items.length; i++) {
+          var p = FX.items[i];
+          p.y += p.v; p.x += Math.sin(FX.t + p.r) * 0.5 + p.d * 0.4;
+          if (p.y > H + 6) { p.y = -6; p.x = Math.random() * W; }
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.28); ctx.fill();
+        }
+      } else if (FX.mode === 'rain') {
+        ctx.strokeStyle = 'rgba(160,210,255,.55)';
+        ctx.lineWidth = 1;
+        for (i = 0; i < FX.items.length; i++) {
+          var q = FX.items[i];
+          q.y += q.v * 9; q.x += q.d;
+          if (q.y > H + 24) { q.y = -24; q.x = Math.random() * W; }
+          ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(q.x - 1.2, q.y + 11); ctx.stroke();
+        }
+      } else if (FX.mode === 'stars') {
+        for (i = 0; i < FX.items.length; i++) {
+          var st = FX.items[i];
+          var al = 0.35 + 0.65 * Math.abs(Math.sin(FX.t * st.s + st.p));
+          ctx.fillStyle = 'rgba(255,255,255,' + al.toFixed(3) + ')';
+          ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.28); ctx.fill();
+        }
+      } else if (FX.mode === 'fog') {
+        for (i = 0; i < FX.items.length; i++) {
+          var f = FX.items[i];
+          f.x += f.v;
+          if (f.x - f.r > W) f.x = -f.r;
+          var rg = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r);
+          rg.addColorStop(0, 'rgba(120,180,255,.10)');
+          rg.addColorStop(1, 'rgba(120,180,255,0)');
+          ctx.fillStyle = rg;
+          ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 6.28); ctx.fill();
+        }
+      }
+      FX.raf = requestAnimationFrame(frame);
+    }
+    frame();
+  }
+
+  (function bindTheme() {
+    var i;
+    var cards = document.querySelectorAll('.themeCard');
+    for (i = 0; i < cards.length; i++) {
+      cards[i].onclick = function () {
+        state.settings.theme = this.getAttribute('data-t');
+        save(); applyTheme();
+      };
+    }
+    var sw = document.querySelectorAll('.swatch[data-a]');
+    for (i = 0; i < sw.length; i++) {
+      sw[i].onclick = function () {
+        state.settings.accent = this.getAttribute('data-a');
+        save(); applyTheme();
+      };
+    }
+    var fxc = document.querySelectorAll('.fxchip');
+    for (i = 0; i < fxc.length; i++) {
+      fxc[i].onclick = function () {
+        state.settings.fx = this.getAttribute('data-f');
+        save(); applyTheme();
+      };
+    }
+    var pick = $('accentPick');
+    if (pick) pick.oninput = function () {
+      state.settings.accent = this.value;
+      save(); applyTheme();
+    };
+    var gr = $('glassRange');
+    if (gr) gr.oninput = function () {
+      state.settings.glass = parseFloat(this.value);
+      save(); applyTheme();
+    };
+    applyTheme();
+  })();
+
+  $('settingsBtn').onclick = openSettings;
+  $('agentsBtn').onclick = openAgents;
+  $('closeAgents').onclick = function () { $('agentsOverlay').classList.remove('open'); };
+  $('createAgent').onclick = createNewAgent;
+  $('closeSettings').onclick = function () { $('overlay').classList.remove('open'); };
+  $('saveSettings').onclick = function () {
+    state.settings.provider = $('provider').value;
+    state.settings.model = $('model').value.trim();
+    state.settings.key = $('key').value.trim();
+    state.settings.pin = $('pin').value.trim();
+    if ($('netName')) {
+      try { localStorage.setItem('klodoks.name', $('netName').value.trim().slice(0, 24)); } catch (e) { }
+    }
+    save();
+    $('overlay').classList.remove('open');
+  };
+
+  $('infoBtn').onclick = function () {
+    alert('КЛОДОКС PRO\n\nМеню чатов, агент с доступом к папке ' + (cfgInfo.workdir || '') +
+      ' и голосовое управление.\n\nГолосовые команды: «новый чат», «очисти чат», «включи агент», «выключи агент», «настройки», «стоп», «озвучка включи/выключи».');
+  };
+
+  /* ---------- кнопки ---------- */
+  $('newChat').onclick = function () { newChat($('agentChip').classList.contains('on')); };
+  $('drawerNew').onclick = function () { newChat(false); $('drawer').classList.remove('open'); };
+  $('chatsBtn').onclick = function () { $('drawer').classList.toggle('open'); renderChats(); };
+  $('clearBtn').onclick = openSettings;
+  if ($('ttsBtn')) $('ttsBtn').onclick = function () {
+    state.settings.tts = state.settings.tts === false;
+    save(); applyTtsButton();
+    if (state.settings.tts === false && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    setStatus(state.settings.tts ? 'озвучка включена' : 'озвучка выключена', false);
+  };
+  $('agentChip').onclick = function () {
+    var c = activeChat() || newChat(true);
+    c.agent = !c.agent;
+    save(); renderMessages();
+    setStatus(c.agent ? 'агент включён' : 'агент выключен', false);
+  };
+  $('attachBtn').onclick = async function () {
+    try {
+      var t = await navigator.clipboard.readText();
+      if (t) { $('input').value += t; $('input').focus(); setStatus('вставлено из буфера', false); }
+    } catch (e) { setStatus('нет доступа к буферу', false); }
+  };
+  $('sendBtn').onclick = send;
+
+  if ($('micBtn')) $('micBtn').onclick = function () {
+    if (!recognition) recognition = initRecognition();
+    if (!recognition) {
+      setStatus('распознавание речи недоступно в этом окне', false);
+      var open = confirm('В этом окне распознавание речи недоступно.\n\nОткрыть КЛОДОКС в браузере Edge, где микрофон работает?');
+      if (open) window.open(location.href, '_blank');
+      return;
+    }
+    if (listening) { recognition.stop(); return; }
+    try { recognition.start(); } catch (e) { setStatus('не удалось включить микрофон: ' + e.message, false); }
+  };
+
+  var input = $('input');
+  input.addEventListener('input', function () {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 130) + 'px';
+  });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); }
+  });
+
+  if ($('testVoice')) {
+    $('testVoice').onclick = function () {
+      state.settings.voice = $('voiceSel') ? $('voiceSel').value : '';
+      state.settings.rate = $('rate') ? (parseFloat($('rate').value) || 1.03) : 1.03;
+      speak('Привет. Я Клодокс. Так я буду говорить.');
+    };
+  }
+
+  load();
+  if (!state.chats.length) newChat(false);
+  renderChats();
+  renderMessages();
+  setStatus('ожидание', false);
+  loadConfig();
+  populateVoices();
+
+  function pollActivity() {
+    fetch('/api/activity', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d || !d.text) return;
+      var now = $('actNow');
+      if (now) now.textContent = d.text;
+      var th = $('actThought');
+      if (th) th.textContent = (d.thought && String(d.thought).trim()) ? String(d.thought).trim() : 'модель не раскрывает рассуждения';
+      var log = $('actLog');
+      if (!log) return;
+      if (log.getAttribute('data-last') === d.text) return;
+      log.setAttribute('data-last', d.text);
+      var t = new Date(d.ts || Date.now());
+      var row = document.createElement('div');
+      row.className = 'actRow';
+      row.textContent = ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2) + ' · ' + d.text;
+      log.insertBefore(row, log.firstChild);
+      while (log.children.length > 40) log.removeChild(log.lastChild);
+    }).catch(function () {});
+  }
+  pollActivity();
+  setInterval(pollActivity, 1000);
+
+  /* выбор гифок убран */
+
+  (function winCtl() {
+    var host = window.chrome && window.chrome.webview;
+    if (!host) { document.body.classList.add('inbrowser'); return; }
+    var bar = $('titlebar');
+    if (bar) {
+      bar.addEventListener('mousedown', function (e) {
+        if (e.target.closest('button') || e.target.tagName === 'IMG' || e.target.tagName === 'INPUT') return;
+        host.postMessage({ type: 'win', act: 'drag' });
+      });
+      bar.addEventListener('dblclick', function (e) {
+        if (e.target.closest('button') || e.target.tagName === 'IMG') return;
+        host.postMessage({ type: 'win', act: 'max' });
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#tbWinctl button'), function (b) {
+      b.onclick = function () { host.postMessage({ type: 'win', act: b.getAttribute('data-act') }); };
+    });
+  })();
+
+  var LAN = { last: 0, seen: [], count: 0 };
+  function lanName() {
+    var n = localStorage.getItem('klodoks.name');
+    if (!n) {
+      n = 'ПК-' + Math.floor(Math.random() * 900 + 100);
+      try { localStorage.setItem('klodoks.name', n); } catch (e) { }
+    }
+    return n;
+  }
+  function lanRender() {
+    var box = $('lanList');
+    if (!box) return;
+    box.innerHTML = '';
+    LAN.seen.forEach(function (m) {
+      var d = document.createElement('div');
+      d.className = 'lanMsg';
+      var b = document.createElement('b');
+      b.textContent = m.from;
+      var t = document.createElement('span');
+      t.className = 't';
+      var dt = new Date(m.at || Date.now());
+      t.textContent = ('0' + dt.getHours()).slice(-2) + ':' + ('0' + dt.getMinutes()).slice(-2);
+      d.appendChild(b);
+      d.appendChild(t);
+      d.appendChild(document.createElement('br'));
+      d.appendChild(document.createTextNode(m.text));
+      box.appendChild(d);
+    });
+    box.scrollTop = box.scrollHeight;
+  }
+  function lanPoll() {
+    fetch('/api/lan?since=' + LAN.last, { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d) return;
+        LAN.count = d.peers || 0;
+        var c = $('lanCount');
+        if (c) c.textContent = LAN.count;
+        var h = $('lanHint');
+        if (h) h.textContent = 'люди в сети: ' + LAN.count + ' · вы: ' + (d.me || '—');
+        if (d.messages && d.messages.length) {
+          LAN.last = d.messages[d.messages.length - 1].id;
+          LAN.seen = LAN.seen.concat(d.messages);
+          if (LAN.seen.length > 60) LAN.seen = LAN.seen.slice(-60);
+          lanRender();
+        }
+      })
+      .catch(function () { });
+  }
+  function lanSend() {
+    var inp = $('lanInput');
+    if (!inp) return;
+    var text = inp.value.trim();
+    if (!text) return;
+    inp.value = '';
+    fetch('/api/lan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text, from: lanName() })
+    }).then(lanPoll).catch(function () { });
+  }
+  if ($('lanBadge')) {
+    $('lanBadge').onclick = function () { $('lanOverlay').classList.add('open'); lanPoll(); };
+    $('lanClose').onclick = function () { $('lanOverlay').classList.remove('open'); };
+    $('lanSend').onclick = lanSend;
+    $('lanInput').onkeydown = function (e) { if (e.key === 'Enter') lanSend(); };
+    lanPoll();
+    setInterval(lanPoll, 5000);
+  }
+
+  if ($('updCheck')) {
+    var updSet = function (t) { var i = $('updInfo'); if (i) i.value = t; };
+    var updCheck = function () {
+      fetch('/api/update/check', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.error) { updSet(d.error); return; }
+          updSet('версия ' + d.current + (d.available ? ' → есть ' + d.latest : ' · обновлений нет'));
+        })
+        .catch(function () { updSet('сервер не отвечает'); });
+    };
+    $('updCheck').onclick = updCheck;
+    $('updApply').onclick = function () {
+      updSet('скачиваю обновление…');
+      fetch('/api/update/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: state.settings.pin || '' })
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        if (d.error) { updSet('ошибка: ' + d.error); return; }
+        updSet('обновлено до ' + d.version + ' — перезапустите КЛОДОКС');
+      }).catch(function () { updSet('ошибка сети'); });
+    };
+    updCheck();
+  }
+
+  function chatB64e(s) { return btoa(unescape(encodeURIComponent(s))); }
+  function chatB64d(s) { return decodeURIComponent(escape(atob(s))); }
+  if ($('chatExport')) {
+    $('chatExport').onclick = function () {
+      var c = activeChat();
+      if (!c) { note('нет активного чата'); return; }
+      var msgs = [];
+      c.messages.forEach(function (m) {
+        if (m.role === 'user' || m.role === 'assistant') msgs.push({ role: m.role, content: String(m.content || '') });
+      });
+      var code = 'KLODOKS1:' + chatB64e(JSON.stringify({ v: 1, title: c.title || '', messages: msgs }));
+      $('chatCode').value = code;
+      try { navigator.clipboard.writeText(code); } catch (e) { }
+      setStatus('код чата скопирован — вставьте его в другой ИИ', false);
+    };
+    $('chatImportBtn').onclick = function () {
+      var raw = String($('chatCode').value || '').trim();
+      if (!raw) { note('вставьте код чата'); return; }
+      if (raw.indexOf('KLODOKS1:') === 0) raw = raw.slice(9);
+      var data;
+      try { data = JSON.parse(chatB64d(raw)); } catch (e) { note('код не распознан'); return; }
+      var c = { id: uid(), title: String(data.title || 'Перенесённый чат').slice(0, 40), agent: true, messages: [] };
+      (data.messages || []).forEach(function (m) {
+        if (m && m.content) c.messages.push({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content) });
+      });
+      state.chats.unshift(c);
+      state.activeId = c.id;
+      save();
+      renderMessages();
+      $('overlay').classList.remove('open');
+      setStatus('чат перенесён: ' + c.messages.length + ' сообщений', false);
+    };
+  }
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = populateVoices;
+  }
+})();
+</script>
+</body>
+</html>

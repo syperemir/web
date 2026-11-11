@@ -1,0 +1,29 @@
+{
+  "port": 8787,
+  "pin": "482913",
+  "workdir": "NeuraWork",
+  "maxAgentSteps": 6,
+  "mode": "coding",
+  "version": "1.0.0",
+  "updateRepo": "",
+  "updateUrl": "",
+  "defaultProvider": "omni",
+  "system": "Ты полезный ассистент. Отвечай по-русски, кратко и по делу. Если просят код — давай рабочий код.",
+  "providers": {
+    "groq": {
+      "title": "Groq (бесплатно, без карты)",
+      "baseUrl": "https://api.groq.com/openai/v1",
+      "defaultModel": "llama-3.3-70b-versatile"
+    },
+    "openrouter": {
+      "title": "OpenRouter (есть бесплатные модели)",
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "defaultModel": "openrouter/auto"
+    },
+    "omni": {
+      "title": "OmniRoute на этом ПК",
+      "baseUrl": "http://localhost:20128/v1",
+      "defaultModel": "kiro/deepseek-3.2"
+    }
+  }
+}
